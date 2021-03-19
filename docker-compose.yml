@@ -1,0 +1,27 @@
+version: '3'
+
+services: 
+    #DB
+    db:
+        image: postgres #postgres imageを引っ張ってくる。
+        container_name: DB_container #container nameの設定
+        environment: 
+            - POSTGRES_DB=postgres
+            - POSTGRES_USER=root
+        #DBを永続化してくれるやつ
+        volumes: 
+            - postgres_data:/var/lib/postgresql/data
+
+    #Django
+    web:
+        build: .
+        command: python3.7 manage.py runserver 0.0.0.0:8000
+        volumes: 
+            - .:/app
+        ports: 
+            - "8080:8080"  #ホスト：コンテナ
+        depends_on: 
+            - db
+
+volumes: 
+    postgres_data:
